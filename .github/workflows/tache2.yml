@@ -19,3 +19,22 @@ jobs:
         run: ./mvnw -B -pl tika-core -am install -DskipTests -Drat.skip=true -Dcheckstyle.skip=true -Dforbiddenapis.skip=true
       - name: Tests tika-core
         run: ./mvnw -B -pl tika-core test -Drat.skip=true -Dcheckstyle.skip=true -Dforbiddenapis.skip=true
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install semgrep==1.185.0
+      - name: Semgrep (nouvelles trouvailles seulement)
+        run: |
+          BASE="${{ github.event.before }}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE="HEAD~1"
+          fi
+          semgrep scan \
+            --config p/java --config p/security-audit --config p/owasp-top-ten \
+            --baseline-commit "$BASE" --error
