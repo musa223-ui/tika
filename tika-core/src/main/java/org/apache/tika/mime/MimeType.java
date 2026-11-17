@@ -16,8 +16,12 @@
  */
 package org.apache.tika.mime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -184,7 +188,7 @@ public final class MimeType implements Comparable<MimeType>, Serializable {
     /**
      * Set an acronym for the mime type
      *
-     * @param acronym
+     * @param
      */
     void setAcronym(String v) {
         if (v == null) {
@@ -206,7 +210,7 @@ public final class MimeType implements Comparable<MimeType>, Serializable {
     /**
      * Set The Uniform Type Identifier
      *
-     * @param uti
+     * @param
      */
     void setUniformTypeIdentifier(String v) {
         if (v == null) {
@@ -469,5 +473,13 @@ public final class MimeType implements Comparable<MimeType>, Serializable {
             return type + ", " + namespaceURI + ", " + localName;
         }
     }
-
+    /**
+     * Ajout de la 2e vulnerabilite de type Désérialisation non sécurisée dans la classe
+     * MimeType.
+     **/
+    public static Object readObject(InputStream in) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(in)) {
+            return ois.readObject();
+        }
+    }
 }

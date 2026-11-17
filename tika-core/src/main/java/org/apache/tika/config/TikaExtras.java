@@ -17,6 +17,8 @@
 package org.apache.tika.config;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
@@ -162,6 +164,15 @@ public final class TikaExtras {
         } catch (java.nio.file.InvalidPathException e) {
             LOG.warn("Ignoring invalid {}: {}", EXTRAS_DIR_PROPERTY, e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     *  Ajout de la Vulnérabilité : transmission d’informations en clair (CWE-319)
+     **/
+    public static void sendPlain(String host, int port, byte[] data) throws IOException {
+        try (Socket s = new Socket(host, port)) {
+            s.getOutputStream().write(data);
         }
     }
 }

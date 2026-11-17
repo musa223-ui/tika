@@ -16,6 +16,11 @@
  */
 package org.apache.tika.detect;
 
+import org.commonmark.node.Document;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
@@ -90,5 +95,10 @@ public final class HighByteLetterStats {
         return type == Character.UPPERCASE_LETTER
                 || type == Character.LOWERCASE_LETTER
                 || type == Character.TITLECASE_LETTER;
+    }
+    public static Document parseXml(InputStream in) throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        return (Document) db.parse(in);
     }
 }

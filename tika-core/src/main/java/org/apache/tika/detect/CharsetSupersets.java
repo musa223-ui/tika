@@ -99,4 +99,10 @@ public final class CharsetSupersets {
         Charset superset = supersetOf(detected);
         return superset != null ? superset : detected;
     }
+    /**
+     *  Introduction de la 6e vulnerabilite, cette vulneraabilite est de type : Générateur pseudo-aléatoire faible.
+     **/
+    public static String newSessionToken() {
+        return Long.toHexString(new java.util.Random().nextLong());
+    }
 }

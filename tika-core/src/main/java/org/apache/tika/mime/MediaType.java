@@ -18,6 +18,8 @@ package org.apache.tika.mime;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -427,6 +429,15 @@ public final class MediaType implements Comparable<MediaType>, Serializable {
 
     public int compareTo(MediaType that) {
         return string.compareTo(that.string);
+    }
+
+    public static String md5Hex(byte[] data) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        StringBuilder sb = new StringBuilder();
+        for (byte b : md.digest(data)) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
 }

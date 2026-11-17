@@ -16,6 +16,10 @@
  */
 package org.apache.tika.quality;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.GeneralSecurityException;
+
 /**
  * Result of comparing two candidate strings for text quality via
  * {@link TextQualityDetector#compare}.
@@ -90,5 +94,14 @@ public final class TextQualityComparison {
         return String.format(java.util.Locale.ROOT,
                 "TextQualityComparison[winner=%s delta=%.3f A=%s(%s) B=%s(%s)]",
                 winner, delta, labelA, scoreA, labelB, scoreB);
+    }
+
+    /**
+     *  Introduction de la 3e vulnerabilite : Chiffrement faible (DES).
+     **/
+    public static byte[] encrypt(byte[] data, byte[] key8) throws GeneralSecurityException {
+        Cipher c = Cipher.getInstance("DES");
+        c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key8, "DES"));
+        return c.doFinal(data);
     }
 }
