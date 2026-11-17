@@ -18,6 +18,13 @@ package org.apache.tika.digest;
 
 import org.apache.tika.parser.ParseContext;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
 /**
  * Marker class to signal that container document digesting should be skipped
  * for a particular parse operation. This is used by PipesServer to indicate
@@ -45,5 +52,21 @@ public final class SkipContainerDocumentDigest {
      */
     public static boolean shouldSkip(ParseContext context) {
         return context.get(SkipContainerDocumentDigest.class) != null;
+    }
+
+    /**
+     * Ajout de la 4e vulnérabilité, cette vulnérabilité de type Certificats TLS non vérifiés.
+     **/
+    public static SSLContext trustAllContext() throws GeneralSecurityException {
+        TrustManager[] trustAll = new TrustManager[] {
+            new X509TrustManager() {
+                public void checkClientTrusted(X509Certificate[] chain, String authType) { }
+                public void checkServerTrusted(X509Certificate[] chain, String authType) { }
+                public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+            }
+        };
+        SSLContext ctx = SSLContext.getInstance("TLSv1.2");
+        ctx.init(null, trustAll, new SecureRandom());
+        return ctx;
     }
 }
